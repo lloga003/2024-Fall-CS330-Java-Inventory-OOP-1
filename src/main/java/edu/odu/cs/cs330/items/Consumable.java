@@ -1,7 +1,10 @@
 package edu.odu.cs.cs330.items;
 
+import java.util.InputMismatchException;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
+////////////////
 /**
  * This class represents one Consumable Item--as found in most video games.
  * This includes food.
@@ -9,104 +12,76 @@ import java.util.Scanner;
  * Consumable Items must be stackable.
  */
 public class Consumable extends Item {
-    /**
-     * The effect "buff" or "debuff" that is received when using this item.
-     */
     protected String effect;
-
-    /**
-     * The number of times this item can be used.
-     */
     protected int uses;
 
-    /**
-     * Default to a Consumable Item with an empty name, no effect and zero
-     * uses.
-     */
-    public Consumable()
-    {
-        super("", true);
-
+    public Consumable() {
+        super("", true); // Initialize name and set stackable to true
         this.effect = "";
-        this.uses   = 0;
+        this.uses = 0;
     }
 
-    /**
-     * Create a copy of this Consumable.
-     *
-     * @param src consumable item to duplicate
-     */
-    public Consumable(Consumable src)
-    {
-        // Complete this method
+    public Consumable(Consumable src) {
+        super(src.name, true); // Copy name and stackable value
+        this.effect = src.effect;
+        this.uses = src.uses;
     }
 
-    /**
-     * Retrieve the effect.
-     *
-     * @return the set effect (i.e., buff or debuff)
-     */
-    public String getEffect()
-    {
+    public String getEffect() {
         return this.effect;
     }
 
-    /**
-     * Set a new buff or debuff.
-     *
-     * @param newEff replacement effect
-     */
-    public void setEffect(String newEff)
-    {
+    public void setEffect(String newEff) {
         this.effect = newEff;
     }
 
-    /**
-     * Retrieve permitted number of uses.
-     *
-     * @return number of total uses
-     */
-    public int getNumberOfUses()
-    {
+    public int getNumberOfUses() {
         return this.uses;
     }
 
-    /**
-     * Set the number of permitted uses.
-     *
-     * @param allowed number of allowed uses
-     */
-    public void setNumberOfUses(int allowed)
-    {
+    public void setNumberOfUses(int allowed) {
         this.uses = allowed;
     }
 
-    /**
-     * Read Consumable Item attributes.
-     */
     @Override
-    public void read(Scanner snr)
-    {
-        super.name = snr.next();
+    public void read(Scanner snr) {
+        try {
+            System.out.print("Enter name: ");
+            this.name = snr.next();
 
-        // Complete this method
+            System.out.print("Enter effect: ");
+            this.effect = snr.next();
+
+            System.out.print("Enter number of uses: ");
+            if (snr.hasNextInt()) {
+                this.uses = snr.nextInt();
+            } else {
+                System.out.println("Invalid input for number of uses.");
+                snr.next(); // Clear invalid input
+            }
+        } catch (NoSuchElementException e) {
+            System.err.println("Input error: " + e.getMessage());
+            snr.nextLine(); // Clear scanner buffer
+        }
+    }
+    
+    //////
+    //////
+    @Override
+    public String toString() {
+        return String.format("  Nme: %s\n"
+                           + "  Eft: %s\n"
+                           + "  Use: %d\n", this.name, this.effect, this.uses);
     }
 
-    /**
-     * Clone--i.e., copy--this Consumable Item.
-     */
+
     @Override
-    public Item clone()
-    {
-        return null;
+    public Item clone() {
+        return new Consumable(this);
     }
 
-    /**
-     * *Print* the Consumable Item
-     */
-    @Override
-    public String toString()
-    {
-        return "Implement this function";
-    }
+   
 }
+
+
+
